@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import css from './IconCheckMark.css';
+import css from './IconCheckmark.css';
 
 const IconCheckmark = props => {
   const { rootClassName, className } = props;

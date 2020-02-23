@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import ReactFilestack from 'filestack-react';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import ExcelToJson from './ExcelToJson'
+import readXlsxFile from 'read-excel-file'
 import { Form, FieldTextInput, SecondaryButton } from '../../components';
-import config from '../config';
+import config from '../../config';
 import css from './ExcelReader.css';
-
+const fs = require('fs')
 const { fileStackAPI } = config
 
 
@@ -49,6 +49,11 @@ class ExcelReader extends Component {
             showUploadedFileBoard: true
         }
         this.handleExcelData = this.handleExcelData.bind(this);
+        this.handleFileUpload = this.handleFileUpload.bind(this);
+        this.handleFileRemove = this.handleFileRemove.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        
+        
     }
     handleFileUpload = ({ filesUploaded }) => {
         const originalFiles = this.state.files 
@@ -61,32 +66,35 @@ class ExcelReader extends Component {
         this.setState({ files: updatedFiles });
     }
     
-    handleSubmit = async () => {
+  //   handleSubmit = async () => {
        
-        console.log('files', this.state.files);
-        const uploadedFiles = 
-            this.state.files.reduce((result, item) => {
-            const { filename, url } = item
-            return `${result}--${filename}-${url}`
-            }, '')
-        
-            this.state.files.map(file => {
-              await ExcelToJson(file);
-            })
-        
+  //     console.log('files', this.state.files);
+    
+  //       this.state.files.map(file => {
+  //         ExcelToJson(file);
+  //       })
+      
+  //     this.setState({ files: []})
+      
+  // }
+
+    handleSubmit(){
+        this.state.files.map(file => {
+          this.handleExcelData(file)
+        })
         this.setState({ files: []})
         
     }
 
-    handleExcelData(){
+    handleExcelData(file){
         // File path.
-        readXlsxFile('/path/to/file').then((rows) => {
+        readXlsxFile(file.url).then((rows) => {
             // `rows` is an array of rows
             // each row being an array of cells.
         })
         
         // Readable Stream.
-        readXlsxFile(fs.createReadStream('/path/to/file')).then((rows) => {
+        readXlsxFile(fs.createReadStream(file.url)).then((rows) => {
             
         })
     }
@@ -96,7 +104,7 @@ class ExcelReader extends Component {
         return(
             <div className="excel-upload-area">
                 <div className={css.uploadedFileBoard} hidden={this.state.showUploadedFileBoard}>
-                {files.map((file, i) => {
+                {this.state.files.map((file, i) => {
                   return (
                     <FileBox 
                       className={css.fileBox} 
@@ -121,25 +129,27 @@ class ExcelReader extends Component {
                                 // customClass: 'some-custom-class'
                             }}
                             options={{maxFiles: 5, customText: "upload"}}
-                            mode="retrieve"
+                            mode="upload"
                             onSuccess={this.handleFileUpload}
                             // onError={onError}
                             customRender={({ onPick }) => (
                                 <div className={css.uploadInput} onClick={onPick}>
-                                <img src={uploadIcon} className={css.uploadIcon} />
-                                <FormattedMessage id="SendMessageForm.uploadButton" />
+                                {/* <img src={uploadIcon} className={css.uploadIcon} /> */}
+                                {/* <FormattedMessage id="SendMessageForm.uploadButton" /> */}
+                                upload files
                                 </div>
                             )}
                         />
                         <SecondaryButton
                             rootClassName={css.submitButton}
-                            inProgress={submitInProgress}
-                            disabled={submitDisabled}
+                            inProgress={this.state.submitInProgress}
+                           
                             onFocus={this.handleFocus}
                             onBlur={this.handleBlur}
                         >
                             <IconSendMessage />
-                            <FormattedMessage id="SendMessageForm.sendMessage" />
+                            {/* <FormattedMessage id="SendMessageForm.sendMessage" /> */}
+                            Import data
                         </SecondaryButton>
                     </div>
                 </div>
