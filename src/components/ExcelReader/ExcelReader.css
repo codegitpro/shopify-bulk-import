@@ -1,0 +1,99 @@
+
+.submitContainer {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .errorContainer {
+    display: block;
+    flex: 1 1;
+    text-align: right;
+    /* padding: 26px 24px 0 0; */
+    margin-top: 20px;
+  }
+  
+  .error {
+    @apply --marketplaceH5FontStyles;
+    font-weight: var(--fontWeightMedium);
+    color: var(--failColor);
+    margin: 0;
+  }
+  
+  .submitButton {
+    @apply --marketplaceButtonStylesSecondary;
+    @apply --marketplaceH5FontStyles;
+    font-weight: var(--fontWeightMedium);
+  
+    float: right;
+    padding: 0 16px;
+    min-height: auto;
+    min-width: 150px;
+    height: 41px;
+  
+    display: inline-block;
+    margin: 0px;
+    width: auto;
+  
+    position: absolute;
+    right: 0px;
+  }
+  
+  .sendIcon {
+    margin: -3px 5px 0 0;
+  }
+  
+  
+  .submitButtonPanel{
+    display: flex;
+    min-height: 40px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .uploadInput{
+    @apply --marketplaceButtonStylesSecondary;
+    @apply --marketplaceH5FontStyles;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: var(--fontWeightMedium);
+  
+    float: left;
+    padding: 0 16px;
+    min-height: auto;
+    min-width: 150px;
+    height: 41px;
+  
+    /* display: inline-block; */
+    margin: 0px;
+    width: auto;
+  
+    position: absolute;
+    left: 0px;
+  }
+  .uploadIcon{
+    width: 28px;
+    margin-right: 3px;
+  }
+.uploadedFileBoard{
+    width: 100%;
+    margin-top: 20px;
+  }
+  .fileBox{
+    padding: 5px 10px;
+    background: #FF6766;
+    display: inline-flex;
+    border-radius: 2px;
+    margin-right: 10px;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+  .closeButton{
+    padding: 0px 5px;
+  }
+  .fileBox span{
+    @apply --marketplaceH5FontStyles;
+    color: white;
+    margin: 0px;
+  }
