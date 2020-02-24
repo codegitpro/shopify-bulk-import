@@ -1,6 +1,25 @@
 import React, { Component } from "react";
 import CSVReader from 'react-csv-reader';
+import uploadIcon from "./upload3.png";
+import excelImg from "./excel.png";
 import "./CsvReaderInput.css";
+
+const convertMoney = (money, flag) => {
+    if (flag) {
+        const formattedMoney = Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+        }).format(money);
+        return formattedMoney;
+    } else {
+        var nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+        var digits = money.split("").map(e => {
+        return nums.includes(e) ? e : "";
+        });
+        var amount = parseFloat(digits.join(""));
+        return amount;
+    }
+}
 
 class CsvReaderInput extends Component {
 
@@ -10,7 +29,9 @@ class CsvReaderInput extends Component {
         this.state = {
             error: "",
             fileName: "",
-            rows: []
+            import_flag: false,
+            rows: [],
+            products: {}
         }
         this.handleForce = this.handleForce.bind(this);
         this.handleImport = this.handleImport.bind(this);
@@ -33,6 +54,8 @@ class CsvReaderInput extends Component {
         "price"
     ]
 
+    modified_headers = ['price']
+
     papaparseOptions = {
         header: true,
         dynamicTyping: true,
@@ -45,8 +68,9 @@ class CsvReaderInput extends Component {
 
     handleForce = (data, fileName) => {
         const rows = this.filterData(data);
+        const rows_data = this.dataTypeCorrectness(rows);
         this.handleFileNameSave(fileName);
-        this.setState({ rows, fileName });
+        this.setState({ rows: rows_data, fileName });
         console.log("data", this.state.rows, this.state.fileName);
     };
 
@@ -96,31 +120,52 @@ class CsvReaderInput extends Component {
                 return this.headers.reduce((flag, key) => flag && row[key] !== null, true)
             }
             const rows = data.filter(row => vaildRow(row));
-
-            return rows;
+            const core_data = rows.map(r => {
+                const temp = {}
+                this.headers.forEach(h => temp[h] = r[h])
+                return temp;
+            })
+            return core_data;
         } else {
             console.log("error", this.state.error)
             return [];
         }
-        
     }
 
-    
+    dataTypeCorrectness = (data) => {
+        const fixed_data = data.map(item => {
+            this.modified_headers.forEach(key => item[key] = convertMoney(item[key]));
+            return item;
+        })
+
+        return fixed_data
+    }
 
     render() {
 
 
         return (
-            <CSVReader
-                cssClass="csv-reader-input"
-                cssInputClass="csv-input"
-                label="import"
-                onFileLoaded={this.handleForce}
-                onError={this.handleDarkSideForce}
-                parserOptions={this.papaparseOptions}
-                inputId="ObiWan"
-                inputStyle={{ color: 'red' }}
-            />
+            <div className="import_board">
+                <p className="info">Please upload CSV files for importing new products</p>
+                <CSVReader
+                    cssClass="csv-reader-input"
+                    cssInputClass="csv-input"
+                    label="Import csv files (siver cloud, jet black)"
+                    onFileLoaded={this.handleForce}
+                    onError={this.handleDarkSideForce}
+                    parserOptions={this.papaparseOptions}
+                    inputId="ObiWan"
+                    inputStyle={{ color: 'red' }}
+                />
+                <span className="progress">products importing...</span>
+                <div className="helper_board">
+                    <h2>Requirements</h2>
+                    <p className="detail_info">1. The format of excel files should be <i className="addition_info">*.csv.</i></p>
+                    <p className="detail_info">2. You should upload two csv file at least.<i className="addition_info">(Silver cloud, jet black)</i></p>
+                    <p className="detail_info">3. The header format should be same as following image.</p>
+                    <img src={excelImg} className="excel_doc"/>
+                </div>
+            </div>
         )
     }
 }
