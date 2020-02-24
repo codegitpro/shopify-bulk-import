@@ -1,6 +1,30 @@
-.csv-reader-input{
-    
+.board_wrapper{
+    display: flex;
+}
+.excel_file_import{
+    width: 50%;
+    border-right: solid 1px gray;
+    /* height: 100%; */
+    padding: 50px;
+}
+.excel_file_infos{
+    width: 50%;
+    padding: 50px;
 }
 .csv-input{
     padding: 5px 10px; 
+}
+
+.image_wrapper{
+    padding: 20px;
+    border-top: solid 1px gray;
+}
+.check_icon{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.csv-input{
+    font-size: 20px;
 }

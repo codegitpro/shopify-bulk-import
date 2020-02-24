@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import CSVReader from 'react-csv-reader';
+import IconCheckmark from '../IconCheckmark/IconCheckmark';
 import uploadIcon from "./upload3.png";
 import excelImg from "./excel.png";
 import "./CsvReaderInput.css";
@@ -21,6 +22,16 @@ const convertMoney = (money, flag) => {
     }
 }
 
+const ExcelFileInfo = ({filename}) => {
+    const item_label = `${filename} added`;
+    return (
+        <div className="excel_file_info">
+            <IconCheckmark className="check_icon"/>
+            <label>{item_label}</label>
+        </div>
+    )
+}
+
 class CsvReaderInput extends Component {
 
     constructor(props) {
@@ -28,10 +39,9 @@ class CsvReaderInput extends Component {
         this.handleForce = this.handleForce.bind(this);
         this.state = {
             error: "",
-            fileName: "",
-            import_flag: false,
+            filename: "",
             rows: [],
-            products: {}
+            excel_file_infos: []
         }
         this.handleForce = this.handleForce.bind(this);
         this.handleImport = this.handleImport.bind(this);
@@ -66,12 +76,13 @@ class CsvReaderInput extends Component {
                 .replace(/\W/g, '_')
     }
 
-    handleForce = (data, fileName) => {
+    handleForce = (data, filename) => {
         const rows = this.filterData(data);
         const rows_data = this.dataTypeCorrectness(rows);
-        this.handleFileNameSave(fileName);
-        this.setState({ rows: rows_data, fileName });
-        console.log("data", this.state.rows, this.state.fileName);
+        this.setState({ rows: rows_data });
+        console.log("data", this.state.rows);
+
+        this.handleFileNameSave(filename);
     };
 
     handleImport = () => {
@@ -79,7 +90,10 @@ class CsvReaderInput extends Component {
     }
 
     handleFileNameSave = (filename) => {
-        console.log("save filename", filename)
+        const updatedFileInfos = this.state.excel_file_infos.map(item => item);
+        updatedFileInfos.push(filename)
+        this.setState({ filename: filename, excel_file_infos: updatedFileInfos })
+        console.log("excel_file_infos", this.state.excel_file_infos)
     }
     
     checkBulkFile = (data) => {
@@ -146,23 +160,41 @@ class CsvReaderInput extends Component {
 
         return (
             <div className="import_board">
-                <p className="info">Please upload CSV files for importing new products</p>
-                <CSVReader
-                    cssClass="csv-reader-input"
-                    cssInputClass="csv-input"
-                    label="Import csv files (siver cloud, jet black)"
-                    onFileLoaded={this.handleForce}
-                    onError={this.handleDarkSideForce}
-                    parserOptions={this.papaparseOptions}
-                    inputId="ObiWan"
-                    inputStyle={{ color: 'red' }}
-                />
-                <span className="progress">products importing...</span>
-                <div className="helper_board">
-                    <h2>Requirements</h2>
-                    <p className="detail_info">1. The format of excel files should be <i className="addition_info">*.csv.</i></p>
-                    <p className="detail_info">2. You should upload two csv file at least.<i className="addition_info">(Silver cloud, jet black)</i></p>
-                    <p className="detail_info">3. The header format should be same as following image.</p>
+                <div className="board_wrapper">
+                    <div className="excel_file_import">
+                        <p className="info">Please upload CSV files for importing new products</p>
+                        
+                        <CSVReader
+                            cssClass="csv-reader-input"
+                            cssInputClass="csv-input"
+                            label="Import csv files (siver cloud, jet black)"
+                            onFileLoaded={this.handleForce}
+                            onError={this.handleDarkSideForce}
+                            parserOptions={this.papaparseOptions}
+                            inputId="ObiWan"
+                            inputStyle={{ color: 'red' }}
+                        />
+                        
+                        <span className="progress">
+                            products importing...
+                        </span>
+                        
+                        <div className="helper_board">
+                            <h2>Requirements</h2>
+                            <p className="detail_info">1. The format of excel files should be <i className="addition_info">*.csv.</i></p>
+                            <p className="detail_info">2. You should upload two csv file at least.<i className="addition_info">(Silver cloud, jet black)</i></p>
+                            <p className="detail_info">3. The header format should be same as following image.</p>
+                        
+                        </div>
+                    </div>
+                    
+                    <div className="excel_file_infos">
+                        {
+                            this.state.excel_file_infos.map((item, index) => <ExcelFileInfo key={index} filename={item}/>)
+                        }
+                    </div>
+                </div>
+                <div className="image_wrapper">
                     <img src={excelImg} className="excel_doc"/>
                 </div>
             </div>
