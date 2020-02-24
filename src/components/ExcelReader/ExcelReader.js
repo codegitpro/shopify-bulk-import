@@ -79,6 +79,7 @@ class ExcelReader extends Component {
   // }
 
     handleSubmit(){
+        console.log("files", this.state.files)
         this.state.files.map(file => {
           this.handleExcelData(file)
         })
@@ -91,12 +92,13 @@ class ExcelReader extends Component {
         readXlsxFile(file.url).then((rows) => {
             // `rows` is an array of rows
             // each row being an array of cells.
+            console.log("rows", rows)
         })
         
         // Readable Stream.
-        readXlsxFile(fs.createReadStream(file.url)).then((rows) => {
+        // readXlsxFile(fs.createReadStream(file.url)).then((rows) => {
             
-        })
+        // })
     }
 
     render(){
@@ -143,7 +145,7 @@ class ExcelReader extends Component {
                         <SecondaryButton
                             rootClassName={css.submitButton}
                             inProgress={this.state.submitInProgress}
-                           
+                            onClick={this.handleSubmit}
                             onFocus={this.handleFocus}
                             onBlur={this.handleBlur}
                         >
